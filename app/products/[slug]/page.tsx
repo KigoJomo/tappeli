@@ -1,19 +1,19 @@
-import { ProductService } from "@/lib/supabase/products";
-import { Product } from "@/lib/supabase/types";
-import Image from "next/image";
-import { notFound } from "next/navigation";
+import { ProductService } from '@/lib/supabase/products';
+import { Product } from '@/lib/supabase/types';
+import Image from 'next/image';
+import { notFound } from 'next/navigation';
 
 export default async function ProductPage({
   params,
-} : {
-  params: {slug: string}
-}){
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const slug = (await params).slug;
-  const product: Product = await ProductService.getBySlug(slug)
+  const product: Product = await ProductService.getBySlug(slug);
 
-  if (!product) return notFound()
+  if (!product) return notFound();
 
-  return(
+  return (
     <section className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-24">
       <div className="w-full aspect-square">
         {product.images.map((image) => (
@@ -34,5 +34,5 @@ export default async function ProductPage({
         <p>${product.price}</p>
       </div>
     </section>
-  )
+  );
 }
