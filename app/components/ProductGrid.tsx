@@ -1,4 +1,4 @@
-import { Product } from "@/lib/supabase/types";
+import { Product } from "@/utils/supabase/types";
 import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";

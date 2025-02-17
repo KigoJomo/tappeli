@@ -1,19 +1,20 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next';
+import './globals.css';
+import { ToastProvider } from '@/context/ToastContext';
 
 export const metadata: Metadata = {
   title: {
     template: '%s | Tappeli Premium Apparel',
-    default: 'Tappeli - Sustainable Fashion for Modern Africa'
+    default: 'Tappeli - Sustainable Fashion for Modern Africa',
   },
-  description: 'Ethically crafted apparel combining African heritage with modern design',
+  description:
+    'Ethically crafted apparel combining African heritage with modern design',
   keywords: ['African fashion', 'sustainable clothing', 'POD Kenya'],
   openGraph: {
     images: '/og-image.jpg',
   },
   // metadataBase: new URL(process.env.SITE_URL!),
-}
-
+};
 
 export default function RootLayout({
   children,
@@ -23,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </body>
     </html>
   );

@@ -12,5 +12,4 @@ export type Product = {
 type ProductImage = {
   url: string;
   alt: string;
-  // is_primary?: boolean;
 };
