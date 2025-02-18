@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { signup } from '../actions';
-import OneTapComponent from '../OneTapComponent';
 
 export default function SignUpPage() {
   return (
@@ -13,8 +12,6 @@ export default function SignUpPage() {
           <input id="password" name="password" type="password" required />
           <button formAction={signup}>Sign Up</button>
           <Link href="/auth/login">Already have an account? Log in</Link>
-          <hr />
-          <OneTapComponent />
         </form>
       </section>
     </>
