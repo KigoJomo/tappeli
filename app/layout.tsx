@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { ToastProvider } from '@/context/ToastContext';
+import { Analytics } from '@vercel/analytics/next';
+import Header from './components/Header';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 export const metadata: Metadata = {
   title: {
@@ -22,9 +25,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
-        <ToastProvider>{children}</ToastProvider>
+    <html lang="en" className="scrollbar-hidden">
+      <body className="scrollbar-hidden relative">
+        <ThemeProvider>
+          <ToastProvider>
+            <Header />
+            {children}
+          </ToastProvider>
+        </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

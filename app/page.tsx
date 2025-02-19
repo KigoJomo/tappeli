@@ -1,12 +1,9 @@
-import { signout } from "./auth/actions";
+import Hero from "./components/Home/Hero";
 
 export default function Home() {
   return (
     <>
-      <section>
-        <h1>tappeli</h1>
-        <button onClick={signout}>signout</button>
-      </section>
+      <Hero />
     </>
   );
 }
