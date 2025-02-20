@@ -31,7 +31,7 @@ const Page: NextPage = () => {
           <p>Email: {user?.email}</p>
         </div>
 
-        <SignoutButton className='mx-auto w-full' />
+        <SignoutButton className='mx-auto md:mx-0 w-full md:w-fit' />
       </section>
     </>
   );

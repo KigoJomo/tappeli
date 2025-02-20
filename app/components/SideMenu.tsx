@@ -23,10 +23,10 @@ const SideMenu = ({
     <>
       {/* Overlay */}
       <div
-        className={`fixed z-40 inset-0 bg-black bg-opacity-50 transition-opacity ${
+        className={`fixed z-40 inset-0 bg-black bg-opacity-50 transition-all ${
           isOpen
-            ? 'opacity-100 visible duration-100'
-            : 'opacity-0 invisible duration-700'
+            ? 'opacity-100 backdrop-blur visible duration-100'
+            : 'opacity-0 backdrop-blur-0 invisible duration-700'
         } ${className}`}
         onClick={onClose}></div>
 
