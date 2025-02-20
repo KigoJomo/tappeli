@@ -25,14 +25,14 @@ const SideMenu = ({ isOpen, onClose, position, children, className }: SideMenuPr
 
       {/* Menu */}
       <div
-        className={`fixed z-50 top-[4%] ${
-          position === 'left' ? 'left-[4%] md:left-[2%]' : 'right-[4%] md:right-[2%]'
-        } h-[92%] w-[92%] md:w-1/3 bg-background border border-dashed border-foreground p-6 md:px-12 transform transition-all duration-300 ${
+        className={`fixed z-50 top-0 ${
+          position === 'left' ? 'left-0' : 'right-0'
+        } h-full w-full md:w-1/3 bg-background p-6 md:px-12 transform transition-all duration-300 ${
           isOpen ? 'translate-x-0' : position === 'left' ? '-translate-x-[120%]' : 'translate-x-[120%]'
         }`}
       >
         {/* Close Button */}
-        <button onClick={onClose} className="w-fit flex ml-auto mb-4 p-3 border rounded-full hover:rotate-90 transition-all duration-300 cursor-pointer focus:outline-none">
+        <button onClick={onClose} className="w-fit flex ml-auto mb-4 p-3 border border-foreground-light rounded-full hover:rotate-90 transition-all duration-300 cursor-pointer focus:outline-none">
           <X size={16} />
         </button>
 
