@@ -22,7 +22,7 @@ const Button: React.FC<ButtonProps> = ({
       {...props}
       className={`${className} ${
         secondary
-          ? 'btn-secondary bg-transparent'
+          ? 'btn-secondary bg-transparent border border-accent'
           : 'bg-accent text-foreground hover:bg-accent-dark'
       } ${
         props.disabled ? 'opacity-50 cursor-not-allowed' : ''

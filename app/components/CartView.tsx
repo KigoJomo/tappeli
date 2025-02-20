@@ -7,7 +7,7 @@ interface CartViewProps {
 
 const CartView: React.FC<CartViewProps> = ({ onClose }) => {
   return (
-    <div>
+    <div className='cart-view h-full'>
       <h3>Cart View</h3>
       <p>This is your cart component.</p>
       <Link

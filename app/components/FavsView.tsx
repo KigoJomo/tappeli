@@ -7,7 +7,7 @@ interface FavsViewProps {
 
 const FavsView: React.FC<FavsViewProps> = ({ onClose }) => {
   return (
-    <div>
+    <div className='favs-view h-full'>
       <h3>Favorites View</h3>
       <p>This is a basic component structure for FavsView.</p>
       <Link

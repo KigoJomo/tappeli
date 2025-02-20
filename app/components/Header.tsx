@@ -3,6 +3,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import {
   AlignLeft,
+  CircleUser,
   Heart,
   House,
   Info,
@@ -22,6 +23,7 @@ import { usePathname } from 'next/navigation';
 import SideMenu from './SideMenu';
 import FavsView from './FavsView';
 import CartView from './CartView';
+import { useUser } from '@/hooks/useUser';
 
 const Header: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
@@ -32,6 +34,8 @@ const Header: React.FC = () => {
 
   const pathname = usePathname();
   const hideHeader = pathname.match(/^\/(?:auth|admin)/);
+
+  const user = useUser();
 
   const pages = [
     { name: 'home', url: '/', icon: <House size={16} /> },
@@ -82,43 +86,61 @@ const Header: React.FC = () => {
         ))}
       </nav>
 
-      {/* right menu: cart, account, contact */}
+      {/* right menu: theme, favs, cart, account */}
       <div className="md:w-1/3 flex items-center justify-end gap-4">
         <MenuButton
           onClick={toggleTheme}
           icon={
             theme === 'dark' ? (
               <>
-                <Sun size={16} />
+                <Sun
+                  className="stroke-foreground md:hover:stroke-accent"
+                  size={16}
+                />
               </>
             ) : (
               <>
-                <Moon size={16} />
+                <Moon
+                  className="stroke-foreground md:hover:stroke-accent"
+                  size={16}
+                />
               </>
             )
           }
-          // label="menu"
         />
         <MenuButton
           onClick={() => setFavsOpen(true)}
-          icon={<Heart size={20} />}
-          // label="favorites"
+          icon={
+            <Heart
+              className="stroke-foreground md:hover:stroke-accent"
+              size={20}
+            />
+          }
         />
 
         <MenuButton
           onClick={() => setCartOpen(true)}
-          icon={<ShoppingCart size={20} />}
-          // label="cart"
+          icon={
+            <ShoppingCart
+              className="stroke-foreground md:hover:stroke-accent"
+              size={20}
+            />
+          }
         />
 
-        <Link
-          href={'/contact'}
-          className={`hidden md:flex uppercase text-sm border-b-2 ${
-            pathname.match('/contact')
-              ? 'border-foreground'
-              : 'border-transparent'
-          } hover:border-foreground transition-all duration-500`}>
-          contact us
+        <Link href={'/account'}>
+          {user ? (
+            // TODO: Add user avatar
+            <CircleUser
+              className="stroke-foreground md:hover:stroke-accent"
+              size={20}
+            />
+          ) : (
+            <CircleUser
+              className="stroke-foreground md:hover:stroke-accent"
+              size={20}
+            />
+          )}
         </Link>
       </div>
 
@@ -128,7 +150,7 @@ const Header: React.FC = () => {
         isOpen={menuOpen}
         onClose={() => setMenuOpen(false)}
         position="left">
-        <nav className="flex flex-col gap-4">
+        <nav className="h-full flex flex-col gap-4">
           <Link href={'/'} className="" onClick={() => setMenuOpen(false)}>
             <Image
               src={`/images/logo-${theme}.webp`}
@@ -147,15 +169,14 @@ const Header: React.FC = () => {
               href={page.url}
               onClick={() => setMenuOpen(false)}
               className={`flex items-center gap-2 uppercase text-sm bg-foreground-faded p-4 rounded-2xl border ${
-              pathname === page.url ? 'border-accent' : 'border-transparent'
+                pathname === page.url ? 'border-accent' : 'border-transparent'
               } transition-all duration-500`}>
               {page.icon}
               {page.name}
             </Link>
           ))}
 
-
-          <div className="bottom flex items-center justify-center gap-4">
+          <div className="bottom mt-auto flex items-center justify-center gap-4">
             <Link href="/" className="">
               <Instagram size={20} />
             </Link>

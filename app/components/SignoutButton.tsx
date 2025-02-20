@@ -7,7 +7,11 @@ import Button from './Button';
 import { useState } from 'react';
 import { Loader, LogOut } from 'lucide-react';
 
-const SignoutButton = () => {
+interface SignoutButtonProps {
+  className?: string;
+}
+
+const SignoutButton: React.FC<SignoutButtonProps> = ({ className }) => {
   const user = useUser();
   const [signingOut, setSigningOut] = useState(false);
 
@@ -28,8 +32,9 @@ const SignoutButton = () => {
         )
       }
       onClick={handleSignout}
-      className={`${!user ? 'hidden' : 'flex items-center gap-2 capitalize'}`}
+      className={`${className} ${!user ? 'hidden' : 'flex items-center gap-2 capitalize'}`}
       disabled={signingOut}
+      secondary
     />
   );
 };

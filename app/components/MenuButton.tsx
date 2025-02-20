@@ -12,7 +12,7 @@ type MenuButtonProps = {
 
 const MenuButton = ({ onClick, icon }: MenuButtonProps) => {
   return (
-    <button onClick={onClick} className="relative *:fill-transparent hover:*:fill-foreground *:transition-all duration-300">
+    <button onClick={onClick} className="relative *:fill-transparent hover:*:fill-accent *:transition-all duration-300">
       {icon}
       {/* <span className="hidden md:flex uppercase text-sm border-b-2 border-transparent md:hover:border-foreground transition-all duration-500">
         {label}
