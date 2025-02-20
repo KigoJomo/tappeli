@@ -3,13 +3,20 @@
 import Link from 'next/link';
 import { login } from '../actions';
 import { Input } from '@/app/components/Input';
-import { Lock, Mail } from 'lucide-react';
+import { Loader, Lock, LogIn, Mail } from 'lucide-react';
 import Button from '@/app/components/Button';
 import { useTheme } from '@/context/ThemeContext';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const { theme } = useTheme();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(e);
+    setIsSubmitting(true);
+  };
 
   return (
     <>
@@ -26,6 +33,7 @@ export default function LoginPage() {
 
         <form
           method="POST"
+          onSubmit={handleSubmit}
           className="right w-full md:w-1/2 md:h-full p-12 md:p-32 mx-4 md:mx-0 shadow-2xl md:shadow-none bg-background rounded-2xl md:rounded-0 flex flex-col justify-center gap-4">
           <div className="mx-auto">
             <Image
@@ -59,9 +67,21 @@ export default function LoginPage() {
             startIcon={<Lock size={16} />}
           />
 
-          <Button label="Log In" formAction={login} type='submit' />
+          <Button
+            label={isSubmitting ? 'Logging in...' : 'Log In'}
+            icon={
+              isSubmitting ? (
+                <Loader size={16} className="animate-spin" />
+              ) : (
+                <LogIn size={16} />
+              )
+            }
+            formAction={login}
+            type="submit"
+            disabled={isSubmitting}
+          />
 
-          <div className="flex items-center gap-2">
+          <div className="mx-auto flex items-center gap-2">
             <p>Don&apos;t have an account?</p>
             <Link
               href="/auth/signup"
