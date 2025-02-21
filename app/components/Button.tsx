@@ -6,6 +6,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   secondary?: boolean;
   icon?: React.ReactNode;
+  iconPosition?: 'left' | 'right';
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -14,6 +15,7 @@ const Button: React.FC<ButtonProps> = ({
   className,
   secondary,
   icon,
+  iconPosition = 'left',
   ...props
 }) => {
   return (
@@ -22,13 +24,14 @@ const Button: React.FC<ButtonProps> = ({
       {...props}
       className={`${className} ${
         secondary
-          ? 'btn-secondary bg-transparent border border-accent'
+          ? 'btn-secondary bg-transparent border border-accent hover:gap-4'
           : 'bg-accent text-foreground hover:bg-accent-dark'
       } ${
         props.disabled ? 'opacity-50 cursor-not-allowed' : ''
-      } transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-opacity-50 rounded-full px-8 py-2 flex items-center justify-center gap-2`}>
-      {icon && <span className="">{icon}</span>}
+      } transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-opacity-50 rounded-full capitalize px-8 py-2 flex items-center justify-center gap-2`}>
+      {icon && iconPosition === 'left' && <span className="">{icon}</span>}
       {label}
+      {icon && iconPosition === 'right' && <span className="">{icon}</span>}
     </button>
   );
 };

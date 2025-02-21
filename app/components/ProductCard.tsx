@@ -1,7 +1,9 @@
+'use client';
+
 import { Product } from '@/utils/supabase/types';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface ProductCardProps {
   product: Product;
@@ -9,28 +11,43 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className={`product-card ${className}`}>
-      <Link href={`/products/${product.slug}`} className="">
-        {/* image, title and desc */}
-        <Image
-          src={product.image_urls[0]}
-          alt={product.title}
-          height={800}
-          width={800}
-          className="w-full aspect-[3/4] object-cover object-center"
-        />
+    <div
+      className={`product-card p-0 transition-all duration-300 overflow-hidden ${className}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}>
+      <Link
+        href={`/products/${product.slug}`}
+        className="w-full aspect-[3/4] rounded-3xl overflow-hidden">
+        <div className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden">
+          {/* Default image */}
+          <Image
+            src={product.image_urls[0]}
+            alt={product.title}
+            height={800}
+            width={800}
+            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300 ${
+              isHovered ? 'opacity-0' : 'opacity-100'
+            }`}
+          />
+          {/* Hover image */}
+          <Image
+            src={product.image_urls[1]}
+            alt={product.title}
+            height={800}
+            width={800}
+            className={`absolute inset-0 w-full h-full object-cover object-center transition-opacity duration-300 ${
+              isHovered ? 'opacity-100' : 'opacity-0'
+            }`}
+          />
+        </div>
         <div className="py-2">
-          <h3 className="text-lg">{product.title}</h3>
+          <h3 className="text-base truncate">{product.title}</h3>
           <p className="">KES {product.price}</p>
         </div>
       </Link>
-
-      <div className="">
-        {/* fav and cart buttons */}
-        <button className="">{/* fav button */}</button>
-        <button className="">{/* cart button */}</button>
-      </div>
     </div>
   );
 };
