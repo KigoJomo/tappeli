@@ -8,14 +8,14 @@ export type Product = {
   slug: string;
   price: number;
   description: string;
-  images: ProductImage[];
+  image_urls: string[];
   in_stock: boolean;
 };
 
-export type ProductImage = {
-  url: string;
-  alt: string;
-};
+// export type ProductImage = {
+//   url: string;
+//   alt: string;
+// };
 
 // New User type for our public.users table
 export type User = {

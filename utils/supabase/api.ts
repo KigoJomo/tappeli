@@ -5,10 +5,22 @@ import type { Product, Category, ProductCategory } from './types';
 
 const supabase = createClient();
 
-// === Products CRUD ===
+// 
 
 export async function getProducts(): Promise<Product[]> {
   const { data, error } = await supabase.from('products').select('*');
+  if (error) throw error;
+  return data as Product[];
+}
+
+export async function getFeaturedProducts(): Promise<Product[]>{
+  const { data, error } = await supabase.from('products').select('*').order('title').limit(4);
+  if (error) throw error;
+  return data as Product[];
+}
+
+export async function getBestSellers(): Promise<Product[]>{
+  const { data, error } = await supabase.from('products').select('*').order('price').limit(4);
   if (error) throw error;
   return data as Product[];
 }

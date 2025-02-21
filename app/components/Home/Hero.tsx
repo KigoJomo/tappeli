@@ -1,6 +1,6 @@
 'use client';
 
-import { MoveRight } from 'lucide-react';
+import { MoveRight, MoveUpRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -46,7 +46,9 @@ const Hero: FC = () => {
             <span className="capitalize text-2xl md:text-lg">view catalog</span>
             <MoveRight className="group-hover:-rotate-45 transition-all duration-300" />
           </div>
-          <p className="flex md:group-hover:translate-y-0 md:translate-y-16 text-foreground md:text-sm transition-all duration-300">Explore our curated collection!</p>
+          <p className="flex md:group-hover:translate-y-0 md:translate-y-16 text-foreground md:text-sm transition-all duration-300">
+            Explore our curated collection!
+          </p>
         </Link>
 
         <div className="md:col-span-1 aspect-square overflow-hidden order-3 md:order-4 border-4 border-foreground-faded rounded-[3rem]">
@@ -67,6 +69,26 @@ const Hero: FC = () => {
             className="hover:scale-105 transition-all duration-300"
           />
         </div>
+      </div>
+
+      <div className="w-full hidden md:grid grid-cols-3 gap-6 mt-20">
+        <div className="col-span-1 aspect-[2.5/1] bg-foreground-faded rounded-3xl p-6 flex items-center">
+          Elevate your look with premium, ethically crafted apparel—sustainable
+          fashion inspired by modern minimalist heritage.
+        </div>
+        <div className="col-span-1 aspect-[2.5/1] bg-foreground-faded rounded-3xl p-6 flex items-center">
+          Redefine your style with trend-driven clothing and accessories
+          designed for the conscious, contemporary wardrobe.
+        </div>
+
+        <Link
+          href={'/collections'}
+          className="col-span-1 aspect-[2.5/1] bg-foreground-faded rounded-3xl p-6 flex items-center justify-center gap-4 group">
+          <span className="group-hover:text-accent transition-all duration-300">
+            Explore our collections
+          </span>
+          <MoveUpRight className="group-hover:text-accent transition-all duration-300" />
+        </Link>
       </div>
     </section>
   );

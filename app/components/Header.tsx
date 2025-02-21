@@ -51,7 +51,7 @@ const Header: React.FC = () => {
   return (
     <header
       className={` ${
-        hideHeader ? 'hidden' : 'py-4 flex items-center justify-between'
+        hideHeader ? 'hidden' : 'sticky top-0 z-50 bg-background py-4 flex items-center justify-between'
       }`}>
       {/* menu & logo */}
       <div className="menu-logo md:w-1/3 flex items-center gap-2">
