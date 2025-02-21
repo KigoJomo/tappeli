@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="scrollbar-hidden">
-      <body className="scrollbar-hidden relative">
+      <body className="scrollbar-custom relative">
         <ThemeProvider>
           <ToastProvider>
             <Header />
