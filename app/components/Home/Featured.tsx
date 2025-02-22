@@ -28,7 +28,7 @@ export default async function Featured() {
       </>
 
       <>
-        <Link href={'/products'} className='w-full'>
+        <Link href={'/products'} className='w-full' target='_blank'>
           <Button
             label="start shopping"
             secondary

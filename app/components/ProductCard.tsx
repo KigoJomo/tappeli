@@ -20,6 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
       onMouseLeave={() => setIsHovered(false)}>
       <Link
         href={`/products/${product.slug}`}
+        target='_blank'
         className="w-full aspect-[3/4] rounded-3xl overflow-hidden">
         <div className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden">
           {/* Default image */}

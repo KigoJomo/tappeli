@@ -11,12 +11,12 @@ export const metadata: Metadata = {
     default: 'Tappeli - Sustainable Fashion for Modern Africa',
   },
   description:
-    'Ethically crafted apparel combining African heritage with modern design',
-  keywords: ['African fashion', 'sustainable clothing', 'POD Kenya'],
+    'Discover high-quality, ethically crafted designs that let you express your style effortlessly.',
+  keywords: ['global fashion', 'sustainable clothing', 'POD apparel', 'ethical fashion', 'modern design'],
   openGraph: {
     images: '/og-image.jpg',
   },
-  // metadataBase: new URL(process.env.SITE_URL!),
+  metadataBase: new URL(process.env.SITE_URL!),
 };
 
 export default function RootLayout({

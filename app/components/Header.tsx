@@ -52,12 +52,12 @@ const Header: React.FC = () => {
   return (
     <header
       className={` ${
-        hideHeader ? 'hidden' : 'sticky top-0 z-50 bg-background py-4 flex items-center justify-between'
+        hideHeader ? 'hidden' : 'sticky top-0 z-50 bg-background py-4 flex items-center justify-between border-b border-foreground-faded'
       }`}>
       {/* menu & logo */}
       <div className="menu-logo md:w-1/3 flex items-center gap-2">
-        <button className={`md:hidden`} onClick={() => setMenuOpen(!menuOpen)}>
-          <AlignLeft size={16} />
+        <button className={`md:hidden p-1`} onClick={() => setMenuOpen(!menuOpen)}>
+          <AlignLeft size={20} />
         </button>
 
         <Link href={'/'} className="">

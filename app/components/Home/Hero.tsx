@@ -41,6 +41,7 @@ const Hero: FC = () => {
 
         <Link
           href={'/products'}
+          target='_blank'
           className="col-span-2 md:col-span-1 aspect-[3/1] md:aspect-[2/1] rounded-full border-4 border-accent bg-accent overflow-hidden order-5 md:order-3 mt-6 md:m-0 flex flex-col items-center justify-center group">
           <div className="w-full flex items-center justify-center gap-6 md:group-hover:translate-y-0 md:translate-y-3 transition-all duration-300">
             <span className="capitalize text-2xl md:text-lg">view catalog</span>
