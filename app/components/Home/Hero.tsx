@@ -14,10 +14,12 @@ const Hero: FC = () => {
   ];
 
   return (
-    <section>
+    <section className='flex flex-col'>
       <h1 className="lowercase text-[6rem] leading-[5rem] md:text-[18rem] md:leading-[16rem] md:-mt-6 font-bold w-fit mx-auto z-[6]">
         tappeli
       </h1>
+
+      <p className='mx-auto mt-8 md:my-12 md:text-2xl text-center'>Discover high-quality, ethically crafted designs that<br className='hidden md:flex' />let you express your style effortlessly</p>
 
       <div className="w-full grid grid-cols-2 md:grid-cols-5 md:items-center mt-6 md:-mt-4 *:z-[4]">
         <div className="md:col-span-1 aspect-square overflow-hidden order-1 border-4 border-foreground-faded rounded-full">

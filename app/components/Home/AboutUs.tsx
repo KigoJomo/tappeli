@@ -45,14 +45,20 @@ const AboutUs: FC = () => {
           </Link>
         </div>
         <div className="col-span-2 md:col-span-1 row-span-1 md:row-span-1 motion-preset-pop border border-foreground-faded flex flex-col justify-center gap-2 p-6 flex-grow-0 bg-foreground-faded">
-            <h3>Innovative Spirit</h3>
-            <p>
-            Experience cutting-edge designs that merge sustainability with style, redefining your wardrobe and spaces for a modern era.
-            </p>
+          <h3>Innovative Spirit</h3>
+          <p>
+            Experience cutting-edge designs that merge sustainability with
+            style, redefining your wardrobe and spaces for a modern era.
+          </p>
         </div>
       </div>
 
-      <Button label='discover your style today' className='my-12 mx-auto w-fit' />
+      <Link href={'/products'} target="_blank">
+        <Button
+          label="discover your style today"
+          className="my-12 mx-auto w-fit"
+        />
+      </Link>
     </section>
   );
 };

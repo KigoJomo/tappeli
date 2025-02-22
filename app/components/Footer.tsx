@@ -51,13 +51,13 @@ export default function Footer() {
               <Link href="/">Home</Link>
             </li>
             <li>
-              <Link href="/collections/new">New Collection</Link>
+              <Link href="/collections/">Collections</Link>
             </li>
             <li>
-              <Link href="/catalog">Catalog</Link>
+              <Link href="/products">Shop</Link>
             </li>
             <li>
-              <Link href="/delivery">Delivery</Link>
+              <Link href="/contact">Contact</Link>
             </li>
           </ul>
         </div>
