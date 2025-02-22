@@ -1,6 +1,7 @@
 import { MoveRight } from 'lucide-react';
 import Link from 'next/link';
 import React, { FC } from 'react';
+import Button from '../Button';
 
 const AboutUs: FC = () => {
   return (
@@ -50,6 +51,8 @@ const AboutUs: FC = () => {
             </p>
         </div>
       </div>
+
+      <Button label='discover your style today' className='my-6 mx-auto w-fit' />
     </section>
   );
 };

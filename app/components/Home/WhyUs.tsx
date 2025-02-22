@@ -40,7 +40,7 @@ const WhyUs: FC = async () => {
               className="border-2 border-foreground-faded rounded-3xl grid grid-cols-1 grid-rows-1 overflow-hidden">
               <div className="col-span-1 row-span-1 z-[2] p-2 transparent-gradient aspect-square flex flex-col justify-end">
                 <div className="w-full flex items-center justify-between gap-2">
-                  <h3 className="text-lg uppercase">{category.name}</h3>
+                  <h3 className="text-lg uppercase text-white">{category.name}</h3>
                   <MoveRight size={16} />
                 </div>
               </div>
