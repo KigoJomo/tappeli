@@ -41,7 +41,7 @@ const WhyUs: FC = async () => {
               <div className="col-span-1 row-span-1 z-[2] p-2 transparent-gradient aspect-square flex flex-col justify-end">
                 <div className="w-full flex items-center justify-between gap-2">
                   <h3 className="text-lg uppercase text-white">{category.name}</h3>
-                  <MoveRight size={16} />
+                  <MoveRight size={16} className='stroke-white' />
                 </div>
               </div>
 
