@@ -4,6 +4,7 @@ import { ToastProvider } from '@/context/ToastContext';
 import { Analytics } from '@vercel/analytics/next';
 import Header from './components/Header';
 import { ThemeProvider } from '@/context/ThemeContext';
+import Footer from './components/Footer';
 
 export const metadata: Metadata = {
   title: {
@@ -31,6 +32,7 @@ export default function RootLayout({
           <ToastProvider>
             <Header />
             {children}
+            <Footer />
           </ToastProvider>
         </ThemeProvider>
         <Analytics />

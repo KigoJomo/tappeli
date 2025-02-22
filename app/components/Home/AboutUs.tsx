@@ -52,7 +52,7 @@ const AboutUs: FC = () => {
         </div>
       </div>
 
-      <Button label='discover your style today' className='my-6 mx-auto w-fit' />
+      <Button label='discover your style today' className='my-12 mx-auto w-fit' />
     </section>
   );
 };
