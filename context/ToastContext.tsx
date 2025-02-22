@@ -1,81 +1,71 @@
-// context/ToastContext.tsx
-"use client"
+// context/toast-context.tsx
+'use client';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  ReactNode,
-  FC,
-} from 'react';
+type ToastType = 'success' | 'error' | 'info';
 
-// Define the possible toast types
-export type ToastType = 'success' | 'info' | 'error';
-
-// Define the shape of a Toast
-export interface Toast {
-  id: number;
+interface Toast {
+  id: string;
   message: string;
   type: ToastType;
 }
 
-// Define the context type that will hold our showToast function
 interface ToastContextType {
-  showToast: (message: string, type: ToastType) => void;
+  showToast: (message: string, type?: ToastType) => void;
 }
 
-// Create the context with an undefined default value
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-// A helper variable for unique toast IDs
-let toastIdCounter = 0;
-
-interface ToastProviderProps {
-  children: ReactNode;
-}
-
-export const ToastProvider: FC<ToastProviderProps> = ({ children }) => {
-  // Store active toasts in state
+export function ToastProvider({ children }: { children: ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
-  // Function to add a toast
-  const showToast = (message: string, type: ToastType) => {
-    const id = ++toastIdCounter;
-    setToasts((prev) => [...prev, { id, message, type }]);
+  const showToast = (message: string, type: ToastType = 'info') => {
+    const id = Date.now().toString();
+    setToasts((prev) => [{ id, message, type }, ...prev]);
 
-    // Automatically remove the toast after 3 seconds
     setTimeout(() => {
-      setToasts((prev) => prev.filter((toast) => toast.id !== id));
+      setToasts((prev) => prev.filter((t) => t.id !== id));
     }, 3000);
   };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {/* Toast container styled with Tailwind CSS for demonstration */}
-      <div className="fixed top-4 right-4 z-50 space-y-2">
-        {toasts.map((toast) => (
-          <div
-            key={toast.id}
-            className={`p-4 rounded shadow-md text-white 
-              ${
-                toast.type === 'success'
-                  ? 'bg-green-500'
-                  : toast.type === 'info'
-                  ? 'bg-blue-500'
-                  : 'bg-red-500'
-              }`}
-          >
-            {toast.message}
-          </div>
-        ))}
+
+      <div
+        className="fixed z-50 space-y-2 top-4 left-1/2 transform -translate-x-1/2 transition-all duration-300">
+        <AnimatePresence>
+          {toasts.map((toast) => (
+        <motion.div
+          key={toast.id}
+          initial={{ y: -100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: -100, opacity: 0 }}
+          className={`p-4 rounded-3xl shadow-lg text-sm border flex items-center ${
+            toast.type === 'success'
+          ? 'bg-green-100 text-green-800 border-green-800'
+          : toast.type === 'error'
+          ? 'bg-red-100 text-red-800 border-red-800'
+          : 'bg-blue-100 text-blue-800 border-blue-800'
+          }`}>
+          <span className="text-nowrap whitespace-pre-wrap">{toast.message}</span>
+          <button
+            onClick={() =>
+          setToasts((prev) => prev.filter((t) => t.id !== toast.id))
+            }
+            className="ml-4 hover:opacity-70">
+            ✕
+          </button>
+        </motion.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );
-};
+}
 
-// Custom hook for consuming the ToastContext
-export const useToast = (): ToastContextType => {
+export const useToast = () => {
   const context = useContext(ToastContext);
   if (!context) {
     throw new Error('useToast must be used within a ToastProvider');
