@@ -6,14 +6,23 @@ import { Mail, Facebook, Instagram, Youtube, ArrowUp } from "lucide-react";
 import { useCallback } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const { theme } = useTheme()
+
+  const pathname = usePathname();
+  const hideFooter = pathname.match(/^\/(?:auth)/);
 
   // Optional scroll-to-top handler
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
+
+
+  if (hideFooter) {
+    return null;
+  }
 
   return (
     <footer className="bg-foreground-faded text-foreground py-10 px-4">
