@@ -33,7 +33,8 @@ const Header: React.FC = () => {
   const [cartOpen, setCartOpen] = useState<boolean>(false);
 
   const pathname = usePathname();
-  const hideHeader = pathname.match(/^\/(?:auth|admin)/);
+  const hideHeader = pathname.match(/^\/(?:auth)/);
+  const adminPage = pathname.match(/^\/(?:admin)/);
 
   const user = useUser();
 
@@ -68,6 +69,7 @@ const Header: React.FC = () => {
             className="object-contain h-6 md:h-8"
           />
         </Link>
+        {adminPage && <p className='bg-accent text-background px-2 rounded-full'>admin</p>}
       </div>
 
       {/* desktop navigation */}

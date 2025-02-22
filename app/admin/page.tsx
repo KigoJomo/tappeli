@@ -6,7 +6,6 @@ const Page: NextPage = () => {
   return (
     <>
       <section className="flex flex-col gap-6">
-        <h3>Admin</h3>
         <ProductForm />
       </section>  
     </>
