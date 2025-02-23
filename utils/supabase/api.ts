@@ -43,6 +43,17 @@ export async function getBestSellers(): Promise<Product[]> {
   return data as Product[];
 }
 
+export async function getSimilarProducts(id: string){
+  const { data, error } = await supabase
+    .from('products')
+    .select('*')
+    .neq('id', id)
+    .limit(6)
+
+  if (error) throw error;
+  return data as Product[]
+}
+
 // === Products CRUD ===
 
 export async function createProduct(
@@ -53,7 +64,6 @@ export async function createProduct(
     .insert(product)
     .select();
   if (error) throw error;
-  // assuming the insert returns the newly created record in an array
   return (data as Product[])[0];
 }
 
@@ -90,6 +100,28 @@ export async function getRandomProductByCategory(
   return data && data.length > 0 ? (data[0].product as unknown as Product) : null;
 }
 
+export async function getProductsByCategoryId(
+  categoryId: string,
+  limit?: number
+): Promise<Product[]> {
+  let query = supabase
+    .from('product_categories')
+    .select('product:products(*)')
+    .eq('category_id', categoryId);
+
+  if (limit && limit > 0) {
+    query = query.limit(limit);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  if (!data) return [];
+
+  // Each row in 'data' looks like { product: { ...productFields } }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return data.map((row: any) => row.product as Product);
+}
+
 // ------------ CATEGORIES ------------
 // === Categories CRUD ===
 
@@ -98,6 +130,18 @@ export async function getCategories(): Promise<Category[]> {
   if (error) throw error;
   return data as Category[];
 }
+
+export async function getCategoryBySlug(slug: string): Promise<Category | null>{
+  const { data, error } = await supabase
+    .from('categories')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle()
+
+  if (error) throw error
+  if(!data) return null
+  return data as Category;
+} 
 
 export async function createCategory(
   category: Partial<Category>

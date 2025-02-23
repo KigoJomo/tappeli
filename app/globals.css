@@ -121,8 +121,8 @@ img {
 }
 
 .scrollbar-custom::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: .5rem;
+  height: .5rem;
 }
 
 .scrollbar-custom::-webkit-scrollbar-track {

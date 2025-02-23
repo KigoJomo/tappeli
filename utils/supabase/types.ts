@@ -1,6 +1,5 @@
 // utils/supabase/types.ts
 
-// Existing Product type
 export type Product = {
   id: string;
   created_at: string; // or Date if you prefer
@@ -12,12 +11,7 @@ export type Product = {
   in_stock: boolean;
 };
 
-// export type ProductImage = {
-//   url: string;
-//   alt: string;
-// };
-
-// New User type for our public.users table
+// New User type for public.users table
 export type User = {
   id: string;
   auth_user_id: string; // Links to Supabase's auth.users.id
@@ -39,7 +33,7 @@ export type Category = {
   updated_at: string; // or Date
 };
 
-// New join table type for product_categories (if needed)
+// New join table type for product_categories
 export type ProductCategory = {
   product_id: string;
   category_id: string;
