@@ -5,6 +5,7 @@
 import { Product } from '@/utils/supabase/types';
 import Button from '../Button';
 import { Heart } from 'lucide-react';
+import { useToast } from '@/context/ToastContext';
 
 interface Props {
   product: Product;
@@ -12,8 +13,10 @@ interface Props {
 }
 
 const FavsButton = ({ product, className }: Props) => {
+  const { showToast } = useToast();
   const handleClick = () => {
     console.log(`Adding ${product.title} to cart`);
+    showToast("This feature is coming soon", "info");
   };
 
   return (
