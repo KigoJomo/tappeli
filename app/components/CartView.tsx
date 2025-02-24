@@ -59,7 +59,7 @@ const CartView: React.FC<CartViewProps> = ({ onClose }) => {
           ))}
           <div className="flex justify-between items-center mt-4 border-t pt-4">
             <p className="text-lg font-semibold">Total:</p>
-            <p className="text-lg font-bold">${total.toLocaleString()}</p>
+            <p className="text-lg font-bold">Ksh {total.toLocaleString()}</p>
           </div>
           <div className="mt-6">
             <Link
