@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import Header from './components/Header';
 import { ThemeProvider } from '@/context/ThemeContext';
 import Footer from './components/Footer';
+import { FavoritesProvider } from '@/context/FavoritesContext';
 
 export const metadata: Metadata = {
   title: {
@@ -30,9 +31,11 @@ export default function RootLayout({
       <body className="scrollbar-hidden relative">
         <ThemeProvider>
           <ToastProvider>
-            <Header />
-            {children}
-            <Footer />
+            <FavoritesProvider>
+              <Header />
+              {children}
+              <Footer />
+            </FavoritesProvider>
           </ToastProvider>
         </ThemeProvider>
         <Analytics />
