@@ -38,3 +38,13 @@ export type ProductCategory = {
   product_id: string;
   category_id: string;
 };
+
+export interface CartItem{
+  id: string;
+  auth_user_id: string;
+  product_id: string;
+  quantity: number;
+  product: Product;
+  created_at: string; // or Date
+  updated_at: string; // or Date
+}

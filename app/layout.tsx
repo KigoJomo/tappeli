@@ -6,6 +6,7 @@ import Header from './components/Header';
 import { ThemeProvider } from '@/context/ThemeContext';
 import Footer from './components/Footer';
 import { FavoritesProvider } from '@/context/FavoritesContext';
+import { CartProvider } from '@/context/CartContext';
 
 export const metadata: Metadata = {
   title: {
@@ -31,11 +32,13 @@ export default function RootLayout({
       <body className="scrollbar-hidden relative">
         <ThemeProvider>
           <ToastProvider>
-            <FavoritesProvider>
-              <Header />
-              {children}
-              <Footer />
-            </FavoritesProvider>
+            <CartProvider>
+              <FavoritesProvider>
+                <Header />
+                {children}
+                <Footer />
+              </FavoritesProvider>
+            </CartProvider>
           </ToastProvider>
         </ThemeProvider>
         <Analytics />

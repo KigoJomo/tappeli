@@ -1,3 +1,5 @@
+// utils/supabase/favoritesApi.ts
+
 import { createClient } from './client';
 import { Product } from './types';
 
