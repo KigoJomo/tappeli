@@ -11,13 +11,13 @@ import { CartProvider } from '@/context/CartContext';
 export const metadata: Metadata = {
   title: {
     template: '%s | Tappeli Premium Apparel',
-    default: 'Tappeli - Sustainable Fashion for Modern Africa',
+    default: 'Tappeli - Sustainable Fashion for Timeless Appeal',
   },
   description:
     'Discover high-quality, ethically crafted designs that let you express your style effortlessly.',
   keywords: ['global fashion', 'sustainable clothing', 'POD apparel', 'ethical fashion', 'modern design'],
   openGraph: {
-    images: '/og-image.jpg',
+    images: '/images/og-image.webp',
   },
   metadataBase: new URL(process.env.SITE_URL!),
 };
