@@ -27,7 +27,7 @@ export async function generateMetadata({
     description:
       product?.description || 'Discover premium quality products at Tappeli',
     openGraph: {
-      images: product?.image_urls || [],
+      images: product?.image_urls[0],
     },
   };
 }
