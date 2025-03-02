@@ -34,13 +34,13 @@ const SideMenu = ({
       <div
         className={`side-menu fixed z-50 top-0 
           ${position === 'left' ? 'left-0' : 'right-0'} 
-            h-full w-full md:w-1/3 bg-background p-6 md:px-12 flex flex-col transform transition-all duration-300 ${
+            h-full w-full md:w-1/3 p-6 md:px-8 flex flex-col transform transition-all duration-300 ${
               isOpen
                 ? 'translate-x-0'
                 : position === 'left'
                 ? '-translate-x-[120%]'
                 : 'translate-x-[120%]'
-            }`}>
+            } bg-background`}>
         {/* Close Button */}
         <button
           onClick={onClose}

@@ -280,7 +280,7 @@ const ProductForm = () => {
                     id="inStock"
                     checked={inStock}
                     onChange={(e) => setInStock(e.target.checked)}
-                    className="h-4 w-4 text-accent focus:ring-accent rounded border-foreground-light"
+                    className="h-4 w-4 text-accent focus:ring-accent rounded border-foreground-light accent-accent"
                   />
                   <label htmlFor="inStock" className="text-sm">
                     In Stock
@@ -354,7 +354,7 @@ const ProductForm = () => {
                     id="existingCategory"
                     checked={!creatingNewCategory}
                     onChange={(e) => setCreatingNewCategory(!e.target.checked)}
-                    className="h-4 w-4 text-accent focus:ring-accent rounded border-foreground-light"
+                    className="h-4 w-4 text-accent focus:ring-accent rounded border-foreground-light accent-accent"
                   />
                   <label htmlFor="existingCategory" className="text-sm">
                     Add to existing category
