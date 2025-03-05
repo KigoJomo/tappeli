@@ -68,7 +68,7 @@ export default async function ProductPage({
             <h2 className="capitalize hidden md:flex">{product.title}</h2>
             <h3 className="capitalize md:hidden">{product.title}</h3>
             <p className="capitalize ml-2 pl-2 border-l-4 border-accent text-xl">
-              ksh {product.price.toLocaleString()}
+              ksh {product.base_price.toLocaleString()}
             </p>
           </div>
 
@@ -76,16 +76,7 @@ export default async function ProductPage({
             <p className="text-xs opacity-50">About:</p>
             <p className="text-sm">{product.description}</p>
           </div>
-
-          <span
-            className={`w-fit px-6 py-2 text-sm rounded-full ${
-              product.in_stock
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-            }`}>
-            {product.in_stock ? 'In Stock' : 'Out of Stock'}
-          </span>
-
+          
           <hr className="" />
 
           <div className="buttons w-full flex flex-col gap-4">

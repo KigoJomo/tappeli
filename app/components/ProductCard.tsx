@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
         </div>
         <div className="py-2">
           <h3 className="text-base truncate">{product.title}</h3>
-          <p className="">KES {product.price}</p>
+          <p className="">KES {product.base_price}</p>
         </div>
       </Link>
     </div>

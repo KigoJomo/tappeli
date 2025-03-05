@@ -46,7 +46,7 @@ const CartItemRow: React.FC<CartItemRowProps> = ({
           <div className='w-full'>
             <p className="font-medium text-foreground capitalize">{product.title}</p>
             <p className="text-sm text-foreground-light my-2">
-              Ksh {product.price.toLocaleString()}
+              Ksh {product.base_price.toLocaleString()}
             </p>
           </div>
 
@@ -76,7 +76,7 @@ const CartItemRow: React.FC<CartItemRowProps> = ({
             </button>
           </div>
           <p className="font-medium text-foreground">
-            Ksh {(product.price * quantity).toLocaleString()}
+            Ksh {(product.base_price * quantity).toLocaleString()}
           </p>
         </div>
       </div>
@@ -91,7 +91,7 @@ const CartView: React.FC<CartViewProps> = ({ onClose }) => {
   const { showToast } = useToast();
 
   const total = cart.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
+    (sum, item) => sum + item.product.base_price * item.quantity,
     0
   );
 

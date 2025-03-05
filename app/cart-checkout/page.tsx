@@ -17,7 +17,7 @@ const CheckoutPage = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Calculate totals
-  const subtotal = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = cart.reduce((sum, item) => sum + item.product.base_price * item.quantity, 0);
   const shipping = 500; // Flat rate shipping
   const total = subtotal + shipping;
 
@@ -161,12 +161,12 @@ const CheckoutPage = () => {
                   <div>
                     <p className="font-medium capitalize">{item.product.title}</p>
                     <p className="text-sm text-foreground-light">
-                      {item.quantity} × Ksh {item.product.price.toLocaleString()}
+                      {item.quantity} × Ksh {item.product.base_price.toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <p className="font-medium">
-                  Ksh {(item.product.price * item.quantity).toLocaleString()}
+                  Ksh {(item.product.base_price * item.quantity).toLocaleString()}
                 </p>
               </div>
             ))}
