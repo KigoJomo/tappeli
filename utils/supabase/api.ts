@@ -111,7 +111,7 @@ export async function getBestSellers(): Promise<Product[]> {
   const { data, error } = await supabase
     .from('products')
     .select('*, gelato_template:gelato_templates(*)')
-    .order('price')
+    .order('base_price')
     .limit(4);
   if (error) throw error;
   return data as Product[];

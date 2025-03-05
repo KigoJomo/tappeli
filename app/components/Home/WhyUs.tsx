@@ -11,7 +11,7 @@ const WhyUs: FC = async () => {
   const categories = await getCategories();
 
   const categoriesWithRandomProduct = await Promise.all(
-    categories.slice(1, 5).map(async (cat) => {
+    categories.slice(0, 4).map(async (cat) => {
       const product = await getRandomProductByCategory(cat.id);
       return { ...cat, product };
     })
