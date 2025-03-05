@@ -25,8 +25,9 @@ import type {
 import { Input } from '@/app/components/Input';
 import Button from '@/app/components/Button';
 import Image from 'next/image';
-import { ImageUp, X } from 'lucide-react';
+import { ImageUp, X, Expand } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
+import { Dialog } from '@/app/components/Dialog';
 
 const ImagePreview = ({
   file,
@@ -39,8 +40,8 @@ const ImagePreview = ({
     <Image
       src={URL.createObjectURL(file)}
       alt="Preview"
-      height={96}
       width={96}
+      height={96}
       className="h-24 w-24 rounded-lg object-cover shadow-sm"
     />
     <button
@@ -69,12 +70,12 @@ const CustomSelect = ({
     <select
       value={value}
       onChange={onChange}
-      className={`w-full rounded-lg border border-foreground-light px-4 py-2 bg-background focus:border-accent appearance-none transition-all duration-300 ${className}`}>
-      <option value="" className="text-foreground bg-background">
+      className={`w-full rounded-full border border-foreground-light px-4 py-2 bg-background focus:border-accent appearance-none transition-all duration-300 ${className}`}>
+      <option value="" className="text-foreground bg-background rounded-full">
         {placeholder}
       </option>
       {options.map((option) => (
-        <option key={option.value} value={option.value}>
+        <option key={option.value} value={option.value} className=''>
           {option.label}
         </option>
       ))}
@@ -102,17 +103,20 @@ const ProductForm = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string>('');
+  const [selectedCategoryId, setSelectedCategoryId] = useState('');
   const [creatingNewCategory, setCreatingNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryParent, setNewCategoryParent] = useState('');
   const [templates, setTemplates] = useState<GelatoTemplate[]>([]);
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
+  const [selectedTemplateId, setSelectedTemplateId] = useState('');
+  const [selectedTemplate, setSelectedTemplate] =
+    useState<GelatoTemplate | null>(null);
   const [variants, setVariants] = useState<GelatoVariant[]>([]);
   const [variantPrices, setVariantPrices] = useState<Record<string, number>>(
     {}
   );
-  const [basePrice, setBasePrice] = useState<number>(0);
+  const [basePrice, setBasePrice] = useState(0);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -126,10 +130,11 @@ const ProductForm = () => {
         setTemplates(temps);
       } catch (error) {
         console.error('Error fetching data:', error);
+        showToast('Failed to load templates and categories', 'error');
       }
     }
     fetchData();
-  }, []);
+  }, [showToast]);
 
   const generateSlug = (text: string): string => {
     return text
@@ -158,10 +163,35 @@ const ProductForm = () => {
   const loadTemplateVariants = async (templateId: string) => {
     try {
       const template = templates.find((t) => t.id === templateId);
-      setVariants(template?.variants as unknown as GelatoVariant[]);
+      if (template?.variants) {
+        setVariants(template.variants as unknown as GelatoVariant[]);
+      }
     } catch (error) {
       console.error('Error loading variants:', error);
+      showToast('Failed to load template variants', 'error');
     }
+  };
+
+  const handleTemplateSelect = (templateId: string) => {
+    const template = templates.find((t) => t.id === templateId);
+    if (template) {
+      setSelectedTemplate(template);
+      setSelectedTemplateId(templateId);
+      loadTemplateVariants(templateId);
+
+      // if (!title) setTitle(template.name);
+      // if (!description) setDescription(template.description);
+
+      setTitle(template.name);
+      setDescription(template.description);
+    }
+  };
+
+  const handlePriceChange = (variantId: string, price: number) => {
+    setVariantPrices((prev) => ({
+      ...prev,
+      [variantId]: price,
+    }));
   };
 
   const validateForm = () => {
@@ -203,13 +233,6 @@ const ProductForm = () => {
     }
 
     return isValid;
-  };
-
-  const handlePriceChange = (variantId: string, price: number) => {
-    setVariantPrices((prev) => ({
-      ...prev,
-      [variantId]: price,
-    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -271,6 +294,7 @@ const ProductForm = () => {
       setNewCategoryName('');
       setNewCategoryParent('');
       setSelectedTemplateId('');
+      setSelectedTemplate(null);
       setVariants([]);
       setVariantPrices({});
       setBasePrice(0);
@@ -282,8 +306,52 @@ const ProductForm = () => {
     }
   };
 
+  const TemplatePreview = () => (
+    <div className="space-y-4">
+      <h3 className="font-medium">Selected Template</h3>
+      {selectedTemplate && (
+        <div className="relative group border rounded-3xl overflow-hidden">
+          <button
+            type="button"
+            onClick={() => setIsPreviewOpen(true)}
+            className="absolute right-2 top-2 bg-background/80 p-1.5 rounded-full hover:bg-background transition-colors">
+            <Expand size={18} />
+          </button>
+          <Image
+            src={selectedTemplate.preview_url}
+            alt={selectedTemplate.name}
+            width={400}
+            height={400}
+            className="w-full h-48 object-contain bg-foreground/5"
+          />
+          <div className="p-4">
+            <h4 className="font-medium">{selectedTemplate.name}</h4>
+            <p className="text-sm text-foreground-light line-clamp-2">
+              {selectedTemplate.description}
+            </p>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="w-full md:px-24 pb-6">
+      <Dialog
+        open={isPreviewOpen}
+        onOpenChange={setIsPreviewOpen}
+        title={selectedTemplate?.name || 'Template Preview'}>
+        {selectedTemplate && (
+          <Image
+            src={selectedTemplate.preview_url}
+            alt={selectedTemplate.name}
+            width={1200}
+            height={1200}
+            className="w-full max-h-[80vh] object-contain"
+          />
+        )}
+      </Dialog>
+
       <div className="w-full flex items-center gap-4 mb-4 md:mb-10">
         <h2 className="text-nowrap">Create New Product</h2>
         <div className="w-full h-[1px] bg-foreground-faded"></div>
@@ -294,10 +362,11 @@ const ProductForm = () => {
           <div className="col-span-1 flex flex-col gap-6 bg-foreground-faded p-4 md:p-6 rounded-3xl">
             <Input
               id="title"
-              label="Title"
+              label="Product Name"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
+              placeholder={selectedTemplate?.name || 'Enter product name'}
             />
 
             <div className="space-y-2">
@@ -310,12 +379,10 @@ const ProductForm = () => {
                   label: t.name,
                 }))}
                 value={selectedTemplateId}
-                onChange={(e) => {
-                  setSelectedTemplateId(e.target.value);
-                  loadTemplateVariants(e.target.value);
-                }}
+                onChange={(e) => handleTemplateSelect(e.target.value)}
                 placeholder="Select a template"
               />
+              {selectedTemplate && <TemplatePreview />}
             </div>
 
             <div className="space-y-2">
@@ -328,7 +395,10 @@ const ProductForm = () => {
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full rounded-lg border border-foreground-light px-4 py-2 bg-transparent outline-none focus:outline-none focus:border-accent transition-all duration-300"
+                placeholder={
+                  selectedTemplate?.description || 'Enter product description'
+                }
+                className="w-full rounded-3xl border border-foreground-light px-4 py-2 bg-transparent outline-none focus:outline-none focus:border-accent transition-all duration-300 scrollbar-hidden"
                 rows={4}
                 required
               />
@@ -349,21 +419,19 @@ const ProductForm = () => {
                 {variants.map((variant) => (
                   <div
                     key={variant.id}
-                    className="space-y-2 p-3 border rounded-lg">
+                    className="space-y-2 p-3 border border-foreground-light rounded-3xl bg-background-faded">
                     <div className="flex justify-between items-center">
                       <span className="font-medium">{variant.title}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-sm">
-                      {variant.variantOptions.map(
-                        (option: { name: string; value: string }) => (
-                          <div key={option.name} className="flex gap-1">
-                            <span className="text-foreground-light">
-                              {option.name}:
-                            </span>
-                            <span>{option.value}</span>
-                          </div>
-                        )
-                      )}
+                      {variant.variantOptions.map((option) => (
+                        <div key={option.name} className="flex gap-1">
+                          <span className="text-foreground-light">
+                            {option.name}:
+                          </span>
+                          <span>{option.value}</span>
+                        </div>
+                      ))}
                     </div>
                     <Input
                       label="Price Override"
@@ -477,7 +545,7 @@ const ProductForm = () => {
           type="submit"
           label={uploading ? 'Creating Product...' : 'Create Product'}
           disabled={uploading}
-          className="w-full"
+          className="w-full md:w-fit md:ml-auto"
           iconPosition="right"
         />
       </form>
