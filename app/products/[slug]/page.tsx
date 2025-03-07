@@ -1,16 +1,10 @@
 // app/products/[slug]/page.tsx
 
-import {
-  getProductBySlug,
-  getProducts,
-  getSimilarProducts,
-} from '@/utils/supabase/api';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import AddToCartButton from '@/app/components/Products/AddToCartButton';
 import GalleryCarousel from '@/app/components/Products/GalleryCarousel';
-import FavsButton from '@/app/components/Products/FavsButton';
 import ProductGrid from '@/app/components/ProductGrid';
+import { fetchProductBySlug, fetchProducts, fetchSimilarProducts } from '@/utils/wix/client';
 
 export async function generateMetadata({
   params,
@@ -18,16 +12,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const slug = (await params).slug;
-  const product = await getProductBySlug(slug);
+  const product = await fetchProductBySlug(slug)
 
   return {
-    title: product?.title
-      ? `${product.title} | Tappeli`
+    title: product?.name
+      ? `${product.name} | Tappeli`
       : 'Tappeli Premium Apparel',
     description:
       product?.description || 'Discover premium quality products at Tappeli',
     openGraph: {
-      images: product?.image_urls[0],
+      images: product?.media.items[0].image.url,
     },
   };
 }
@@ -38,7 +32,7 @@ export default async function ProductPage({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const product = await getProductBySlug(slug);
+  const product = await fetchProductBySlug(slug)
 
   if (!product) {
     return (
@@ -54,21 +48,22 @@ export default async function ProductPage({
     );
   }
 
-  const similarProducts = await getSimilarProducts(product.id);
+  const similarProducts = await fetchSimilarProducts(product._id);
+  const productImages = product.media.items.map(item => item.image.url)
 
   return (
     <>
       <section className="p-0 md:p-12 flex flex-col md:flex-row gap-6 md:gap-12">
         <div className="w-full md:w-1/2 h-fit md:order-2">
-          <GalleryCarousel images={product.image_urls} />
+          <GalleryCarousel images={productImages} />
         </div>
 
         <div className="details w-full md:w-1/2 md:aspect-[4/3] px-4 flex flex-col gap-6">
           <div className="w-full flex flex-col gap-1">
-            <h2 className="capitalize hidden md:flex">{product.title}</h2>
-            <h3 className="capitalize md:hidden">{product.title}</h3>
+            <h2 className="capitalize hidden md:flex">{product.name}</h2>
+            <h3 className="capitalize md:hidden">{product.name}</h3>
             <p className="capitalize ml-2 pl-2 border-l-4 border-accent text-xl">
-              ksh {product.base_price.toLocaleString()}
+            {product.price.currency} {product.price.price.toLocaleString()}
             </p>
           </div>
 
@@ -79,10 +74,10 @@ export default async function ProductPage({
           
           <hr className="" />
 
-          <div className="buttons w-full flex flex-col gap-4">
+          {/* <div className="buttons w-full flex flex-col gap-4">
             <AddToCartButton product={product} className="w-full md:w-full" />
             <FavsButton product={product} className="w-full md:w-full" />
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -104,6 +99,6 @@ export default async function ProductPage({
 export const revalidate = 3600; // 1 hour
 
 export async function generateStaticParams() {
-  const products = await getProducts();
+  const products = await fetchProducts();
   return products?.map((product) => ({ slug: product.slug })) || [];
 }

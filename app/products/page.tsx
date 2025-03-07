@@ -1,16 +1,15 @@
-import { getProducts } from "@/utils/supabase/api";
 import ProductGrid from "../components/ProductGrid";
-import { Product } from "@/utils/supabase/types";
+import { Product } from "@/utils/wix/types";
+import { fetchProducts } from "@/utils/wix/client";
+import FadedTitle from "../components/FadedTitle";
 
 export default async function ProductsPage() {
-  const products: Product[] = await getProducts();
+  const products: Product[] = await fetchProducts()
 
   return (
     <>
       <section className="flex flex-col gap-6 md:gap-12">
-        <h1 className="italic opacity-25 lowercase text-[3rem] leading-[2rem] md:text-[12rem] md:leading-[10rem] md:-mt-10 font-bold w-fit mx-auto text-nowrap">
-          All Products
-        </h1>
+        <FadedTitle text="all products" />
 
         <hr className="border-foreground-faded" />
 

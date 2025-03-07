@@ -13,6 +13,11 @@ const nextConfig: NextConfig = {
         hostname: '*.amazonaws.com',
         pathname: '/**/*',
       },
+      {
+        protocol: 'https',
+        hostname: '*static.wixstatic.com',
+        pathname: '/**/*',
+      },
     ]
   }
 };

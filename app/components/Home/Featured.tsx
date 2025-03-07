@@ -1,13 +1,12 @@
-import { getBestSellers, getFeaturedProducts } from '@/utils/supabase/api';
 import React from 'react';
 import ProductGrid from '../ProductGrid';
 import Button from '../Button';
 import { MoveRight } from 'lucide-react';
 import Link from 'next/link';
+import { fetchProducts } from '@/utils/wix/client';
 
 export default async function Featured() {
-  const featuredProducts = await getFeaturedProducts();
-  const bestSellers = await getBestSellers();
+  const featuredItems = await fetchProducts();
 
   return (
     <section className="flex flex-col gap-6 py-12">
@@ -16,7 +15,7 @@ export default async function Featured() {
           <h2 className="text-nowrap">featured products</h2>
           <div className="w-full h-[1px] bg-foreground-faded"></div>
         </div>
-        <ProductGrid products={featuredProducts} />
+        <ProductGrid products={featuredItems} />
       </>
 
       <>
@@ -24,11 +23,11 @@ export default async function Featured() {
           <h2 className="text-nowrap">Best sellers</h2>
           <div className="w-full h-[1px] bg-foreground-faded"></div>
         </div>
-        <ProductGrid products={bestSellers} />
+        <ProductGrid products={featuredItems} />
       </>
 
       <>
-        <Link href={'/products'} className='w-full' target='_blank'>
+        <Link href={'/products'} className='w-full' target=''>
           <Button
             label="start shopping"
             secondary

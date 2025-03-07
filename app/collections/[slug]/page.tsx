@@ -1,12 +1,13 @@
 // app/collections/[slug]/page.tsx
 
+import FadedTitle from '@/app/components/FadedTitle';
 import ProductGrid from '@/app/components/ProductGrid';
 import {
-  getCategories,
-  getCategoryBySlug,
-  getProductsByCategoryId,
-} from '@/utils/supabase/api';
-import { Product } from '@/utils/supabase/types';
+  fetchCollectionBySlug,
+  fetchCollections,
+  fetchProductsByCollection,
+} from '@/utils/wix/client';
+import { Product } from '@/utils/wix/types';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import React from 'react';
@@ -17,14 +18,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const slug = (await params).slug;
-  const category = await getCategoryBySlug(slug);
+  const collection = await fetchCollectionBySlug(slug);
 
   return {
-    title: category?.name
-      ? `${category.name} Collection | Tappeli`
+    title: collection?.name
+      ? `${collection.name} Collection | Tappeli`
       : 'Collection | Tappeli',
-    description: category?.name
-      ? `Explore ${category.name} products at Tappeli.`
+    description: collection?.name
+      ? `Explore ${collection.name} products at Tappeli.`
       : 'Browse our latest collection.',
   };
 }
@@ -35,9 +36,9 @@ export default async function CollectionPage({
   params: Promise<{ slug: string }>;
 }) {
   const slug = (await params).slug;
-  const category = await getCategoryBySlug(slug);
+  const collection = await fetchCollectionBySlug(slug);
 
-  if (!category) {
+  if (!collection) {
     return (
       <section className="flex flex-col items-center justify-center gap-6">
         <h1>Collection not found</h1>
@@ -49,13 +50,11 @@ export default async function CollectionPage({
     );
   }
 
-  const products: Product[] = await getProductsByCategoryId(category.id);
+  const products: Product[] = await fetchProductsByCollection(collection._id);
 
   return (
     <section className="flex flex-col gap-6 md:gap-12">
-      <h1 className="italic opacity-25 lowercase text-[4rem] leading-[4rem] md:text-[16rem] md:leading-[14rem] md:-mt-10 font-bold w-fit mx-auto">
-        {category.name}
-      </h1>
+      <FadedTitle text={collection.name} />
 
       <hr className="border-foreground-faded" />
 
@@ -73,11 +72,9 @@ export default async function CollectionPage({
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
-  // 1. Fetch all categories from your database
-  const categories = await getCategories(); // Your existing API function
-  
-  // 2. Return array of parameters objects
-  return categories.map((category) => ({
-    slug: category.slug, // Matches [slug] in route path
+  const collections = await fetchCollections();
+
+  return collections.map((collection) => ({
+    slug: collection.slug,
   }));
 }

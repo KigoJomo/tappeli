@@ -1,9 +1,10 @@
-import AboutUs from "./components/Home/AboutUs";
-import Featured from "./components/Home/Featured";
-import Hero from "./components/Home/Hero";
-import WhyUs from "./components/Home/WhyUs";
+import AboutUs from './components/Home/AboutUs';
+import Featured from './components/Home/Featured';
+import Hero from './components/Home/Hero';
+import WhyUs from './components/Home/WhyUs';
 
-export default function Home() {
+export default async function Home() {
+
   return (
     <>
       <Hero />

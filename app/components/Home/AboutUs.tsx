@@ -53,7 +53,7 @@ const AboutUs: FC = () => {
         </div>
       </div>
 
-      <Link href={'/products'} target="_blank">
+      <Link href={'/products'} target="">
         <Button
           label="discover your style today"
           className="my-12 mx-auto w-fit"

@@ -1,21 +1,18 @@
-import {
-  getCategories,
-  getRandomProductByCategory,
-} from '@/utils/supabase/api';
+import { fetchCollections, fetchProductsByCollection } from '@/utils/wix/client';
 import { BadgeCheck, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { FC } from 'react';
 
 const WhyUs: FC = async () => {
-  const categories = await getCategories();
-
-  const categoriesWithRandomProduct = await Promise.all(
-    categories.slice(0, 4).map(async (cat) => {
-      const product = await getRandomProductByCategory(cat.id);
-      return { ...cat, product };
+  const collections = await fetchCollections()
+  // console.log()
+  const collectionsWithProducts = await Promise.all(
+    collections.slice(0, 4).map(async (collection) => {
+      const product = await fetchProductsByCollection(collection._id!, 1)
+      return { ...collection, product: product[0] };
     })
-  );
+  )
 
   const sellingPoints = [
     'Eco-friendly production for sustainable fashion.',
@@ -32,24 +29,24 @@ const WhyUs: FC = async () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12">
         <div className="col-span-1 rounded-3xl overflow-hidden aspect-square grid grid-cols-2 grid-rows-2 gap-6">
-          {categoriesWithRandomProduct.map((category) => (
+          {collectionsWithProducts.map((collection) => (
             <Link
-              key={category.id}
-              href={`/collections/${category.slug}`}
-              target="_blank"
+              key={collection._id}
+              href={`/collections/${collection.slug}`}
+              target=""
               className="border-2 border-foreground-faded rounded-3xl grid grid-cols-1 grid-rows-1 overflow-hidden">
               <div className="col-span-1 row-span-1 z-[2] p-2 transparent-gradient aspect-square flex flex-col justify-end">
                 <div className="w-full flex items-center justify-between gap-2">
-                  <h3 className="text-lg uppercase text-white">{category.name}</h3>
+                  <h3 className="text-lg uppercase text-white">{collection.name}</h3>
                   <MoveRight size={16} className='stroke-white' />
                 </div>
               </div>
 
               <Image
                 src={
-                  category.product?.image_urls[0] || '/images/logo-dark.webp'
+                  collection.product.media.items[0].image.url || '/images/logo-dark.webp'
                 }
-                alt={category.name}
+                alt={`${collection.name} | Tappeli`}
                 width={300}
                 height={300}
                 className="col-span-1 row-span-1 z-[1]"

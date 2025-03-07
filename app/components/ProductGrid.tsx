@@ -1,8 +1,8 @@
 // app/components/ProductGrid.tsx
 
-import { Product } from "@/utils/supabase/types";
 import { FC } from "react";
 import ProductCard from "./ProductCard";
+import { Product } from "@/utils/wix/types";
 
 interface ProductGridProps extends React.HTMLAttributes<HTMLDivElement> {
   products: Product[];
@@ -25,7 +25,7 @@ const ProductGrid: FC<ProductGridProps> = ({ products, isHorizontal = false, cla
     >
       {products.map((product) => (
         <div
-          key={product.id}
+          key={product._id}
           className={
             isHorizontal
               ? `flex-shrink-0 w-[8rem] md:w-[16rem] ${cardClassName || ""}`
