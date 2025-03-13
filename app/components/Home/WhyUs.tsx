@@ -1,4 +1,5 @@
-import { fetchCollections, fetchProductsByCollection } from '@/utils/wix/client';
+import { fetchCollections } from '@/utils/wix/collectionsApi';
+import { fetchProductsByCollection } from '@/utils/wix/productsApi';
 import { BadgeCheck, MoveRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';

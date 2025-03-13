@@ -1,103 +1,111 @@
 // app/components/Products/AddToCartButton.tsx
 'use client';
 
-import React, { useState } from 'react';
-import { Product } from '@/utils/supabase/types';
+import { useState } from 'react';
+import { Product } from '@/utils/wix/types';
+import { GelatoVariant } from '@/utils/gelato/types';
 import Button from '../Button';
-import { ShoppingCart, Plus, Minus, Loader } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 import { useCart } from '@/context/CartContext';
 import { useUser } from '@/hooks/useUser';
 
-interface Props {
+interface AddToCartProps {
   product: Product;
+  variants: GelatoVariant[];
   className?: string;
 }
 
-const AddToCartButton = ({ product, className }: Props) => {
+const AddToCartButton = ({ product, variants, className }: AddToCartProps) => {
   const { showToast } = useToast();
-  const { cart, addToCart, updateCartQuantity, removeFromCart } = useCart();
+  const { addToCart } = useCart();
   const user = useUser();
   const [loading, setLoading] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, string>>({});
 
-  // Find the cart item corresponding to this product
-  const cartItem = cart.find((item) => item.product.id === product.id);
-
-  const handleAdd = async () => {
+  const handleAddToCart = async () => {
     if (!user) {
       showToast("Please log in to add items to your cart", "error");
       return;
     }
-    setLoading(true);
-    try {
-      if (cartItem) {
-        await updateCartQuantity(product, user.id, cartItem.quantity + 1);
-        showToast("Increased quantity", "success");
-      } else {
-        await addToCart(product, user.id, 1);
-        showToast("Added to cart", "success");
-      }
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-      showToast("Error updating cart", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
 
-  const handleRemove = async () => {
-    if (!user) {
-      showToast("Please log in to update your cart", "error");
+    // Validate all options are selected
+    const requiredOptions = Array.from(
+      new Set(variants.flatMap(v => v.variantOptions.map(o => o.name)))
+    );
+    
+    const missingOptions = requiredOptions.filter(
+      option => !selectedOptions[option]
+    );
+
+    if (missingOptions.length > 0) {
+      showToast(`Please select: ${missingOptions.join(', ')}`, "error");
       return;
     }
-    if (!cartItem) return;
+
+    // Find matching variant
+    const selectedVariant = variants.find(variant => 
+      variant.variantOptions.every(
+        option => selectedOptions[option.name] === option.value
+      )
+    );
+
+    if (!selectedVariant) {
+      showToast("Selected combination not available", "error");
+      return;
+    }
+
     setLoading(true);
     try {
-      if (cartItem.quantity > 1) {
-        await updateCartQuantity(product, user.id, cartItem.quantity - 1);
-        showToast("Decreased quantity", "success");
-      } else {
-        await removeFromCart(product, user.id);
-        showToast("Removed from cart", "success");
-      }
+      await addToCart(
+        product,
+        selectedVariant.productUid,
+        selectedVariant.variantOptions
+      );
+      showToast("Added to cart", "success");
     } catch (error) {
-      console.error("Error updating cart:", error);
-      showToast("Error updating cart", "error");
+      console.error("Error adding to cart:", error);
+      showToast("Error adding item", "error");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={`flex items-center justify-center gap-2 ${className}`}>
-      {loading ? (
-        <div className="w-full border border-accent bg-accent rounded-full px-8 py-2 flex items-center justify-center">
-          <Loader size={16} className="animate-spin" />
+    <div className={`flex flex-col gap-4 ${className}`}>
+      {variants[0]?.variantOptions.map((option) => (
+        <div key={option.name} className="space-y-2">
+          <h4 className="text-sm font-medium capitalize">{option.name}</h4>
+          <div className="flex flex-wrap gap-2">
+            {Array.from(
+              new Set(variants.map(v => 
+                v.variantOptions.find(o => o.name === option.name)?.value
+              ).filter((value): value is string => value !== undefined))
+            ).map((value) => (
+              <button
+                key={value}
+                onClick={() => setSelectedOptions(prev => ({
+                  ...prev,
+                  [option.name]: value
+                }))}
+                className={`px-4 py-2 rounded-full border ${
+                  selectedOptions[option.name] === value
+                    ? 'border-accent bg-accent/10'
+                    : 'border-foreground/20 hover:border-foreground/40'
+                } transition-colors`}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
         </div>
-      ) : cartItem ? (
-        <div className='w-full border border-accent bg-accent rounded-full px-8 py-2 flex items-center justify-center gap-4'>
-          <button
-            onClick={handleRemove}
-            className="bg-foreground-faded hover:bg-foreground-light text-foreground font-bold py-1 px-2 rounded-full"
-          >
-            <Minus size={16} />
-          </button>
-          <span className="font-semibold">{cartItem.quantity}</span>
-          <button
-            onClick={handleAdd}
-            className="bg-foreground-faded hover:bg-foreground-light text-foreground font-bold py-1 px-2 rounded-full"
-          >
-            <Plus size={16} />
-          </button>
-        </div>
-      ) : (
-        <Button
-          label="Add to Cart"
-          onClick={handleAdd}
-          icon={<ShoppingCart size={16} />}
-          className='w-full'
-        />
-      )}
+      ))}
+
+      <Button
+        label={loading ? 'Adding...' : 'Add to Cart'}
+        onClick={handleAddToCart}
+        disabled={loading || variants.length === 0}
+        className="w-full mt-4"
+      />
     </div>
   );
 };

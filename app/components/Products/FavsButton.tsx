@@ -2,12 +2,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Product } from '@/utils/supabase/types';
 import Button from '../Button';
 import { Heart, Loader } from 'lucide-react';
 import { useToast } from '@/context/ToastContext';
 import { useFavorites } from '@/context/FavoritesContext';
 import { useUser } from '@/hooks/useUser';
+import { Product } from '@/utils/wix/types';
 
 interface Props {
   product: Product;
@@ -21,7 +21,7 @@ const FavsButton = ({ product, className }: Props) => {
   const [toggling, setToggling] = useState(false);
 
   // Check if the product is already favorited.
-  const isFavorited = favorites.some((fav) => fav.id === product.id);
+  const isFavorited = favorites.some((fav) => fav._id === product._id);
 
   const handleClick = async () => {
     if (!user) {

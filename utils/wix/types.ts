@@ -129,6 +129,7 @@ export interface Product {
   lastUpdated: string;
   ribbon: string;
   exportProductId: string;
+  gelatoTemplateId?: string;
   _id: string;
   _createdDate: string;
 }

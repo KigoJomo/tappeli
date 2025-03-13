@@ -1,7 +1,7 @@
 "use client"
 
 import { addFavorite, getFavorites, removeFavorite } from "@/utils/supabase/favoritesApi";
-import { Product } from "@/utils/supabase/types";
+import { Product } from "@/utils/wix/types";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 interface FavoritesContextType{
@@ -25,12 +25,12 @@ export const FavoritesProvider = ({ children }: {children: ReactNode})=>{
   }
 
   const toggleFavorite = async (product: Product, authUserId: string) => {
-    const exists = favorites.some(fav => fav.id === product.id)
+    const exists = favorites.some(fav => fav._id === product._id)
     try {
       if(exists){
-        await removeFavorite(authUserId, product.id)
+        await removeFavorite(authUserId, product._id)
       } else{
-        await addFavorite(authUserId, product.id)
+        await addFavorite(authUserId, product._id)
       }
 
       refreshFavorites(authUserId)

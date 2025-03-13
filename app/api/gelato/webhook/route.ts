@@ -6,8 +6,10 @@ import { createServiceClient } from '@/utils/supabase/service-client';
 export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
+  const supabase = createServiceClient();
+  
   try {
-    const payload = await request.json();
+    const payload: TemplateWebhookEvent = await request.json();
     const signature = request.headers.get('X-Gelato-Signature');
     const secret = process.env.GELATO_WEBHOOK_SECRET!;
 
@@ -22,15 +24,15 @@ export async function POST(request: NextRequest) {
     // Handle different event types
     switch (payload.event) {
       case 'store_product_template_created':
-        await handleTemplateCreated(payload);
+        await handleTemplateCreated(supabase, payload);
         break;
 
       case 'store_product_template_updated':
-        await handleTemplateUpdated(payload);
+        await handleTemplateUpdated(supabase, payload);
         break;
 
       case 'store_product_template_deleted':
-        await handleTemplateDeleted(payload);
+        await handleTemplateDeleted(supabase, payload);
         break;
 
       default:
@@ -51,60 +53,100 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Handle template creation
-async function handleTemplateCreated(payload: Partial<TemplateWebhookEvent>) {
-  const supabase = createServiceClient();
-  const templateData = {
-    template_uid: payload.storeProductTemplateId,
-    name: payload.title,
-    description: payload.description,
-    preview_url: payload.previewUrl,
-    variants: payload.variants,
-    created_at: payload.createdAt
-      ? new Date(payload.createdAt).toISOString()
-      : new Date().toISOString(),
-    updated_at: payload.updatedAt
-      ? new Date(payload.updatedAt).toISOString()
-      : new Date().toISOString(),
-  };
-
-  const { error } = await supabase
+// Template creation handler
+async function handleTemplateCreated(
+  supabase: ReturnType<typeof createServiceClient>,
+  payload: TemplateWebhookEvent
+) {
+  // Upsert template
+  const { error: templateError } = await supabase
     .from('gelato_templates')
-    .upsert(templateData, {
-      onConflict: 'template_uid',
+    .upsert({
+      id: payload.storeProductTemplateId,
+      title: payload.title,
+      description: payload.description,
+      preview_url: payload.previewUrl,
+      created_at: new Date(payload.createdAt).toISOString(),
+      updated_at: new Date(payload.updatedAt).toISOString()
     });
 
-  if (error) throw error;
+  if (templateError) throw templateError;
+
+  // Process variants
+  await syncVariants(supabase, payload);
 }
 
-// Handle template updates
-async function handleTemplateUpdated(payload: Partial<TemplateWebhookEvent>) {
-  const supabase = createServiceClient();
-  const updateData = {
-    name: payload.title,
-    description: payload.description,
-    preview_url: payload.previewUrl,
-    variants: payload.variants,
-    updated_at: payload.updatedAt
-      ? new Date(payload.updatedAt).toISOString()
-      : new Date().toISOString(),
-  };
-
-  const { error } = await supabase
+// Template update handler
+async function handleTemplateUpdated(
+  supabase: ReturnType<typeof createServiceClient>,
+  payload: TemplateWebhookEvent
+) {
+  // Update template
+  const { error: templateError } = await supabase
     .from('gelato_templates')
-    .update(updateData)
-    .eq('template_uid', payload.storeProductTemplateId);
+    .update({
+      title: payload.title,
+      description: payload.description,
+      preview_url: payload.previewUrl,
+      updated_at: new Date(payload.updatedAt).toISOString()
+    })
+    .eq('id', payload.storeProductTemplateId);
 
-  if (error) throw error;
+  if (templateError) throw templateError;
+
+  // Sync variants (delete removed ones)
+  const currentVariantIds = payload.variants.map(v => v.id);
+  
+  // Delete variants not present in the update
+  const { error: deleteError } = await supabase
+    .from('gelato_variants')
+    .delete()
+    .eq('template_id', payload.storeProductTemplateId)
+    .not('id', 'in', `(${currentVariantIds.join(',')})`);
+
+  if (deleteError) throw deleteError;
+
+  // Update remaining variants
+  await syncVariants(supabase, payload);
 }
 
-// Handle template deletion
-async function handleTemplateDeleted(payload: Partial<TemplateWebhookEvent>) {
-  const supabase = createServiceClient();
+// Template deletion handler
+async function handleTemplateDeleted(
+  supabase: ReturnType<typeof createServiceClient>,
+  payload: TemplateWebhookEvent
+) {
   const { error } = await supabase
     .from('gelato_templates')
     .delete()
-    .eq('template_uid', payload.storeProductTemplateId);
+    .eq('id', payload.storeProductTemplateId);
 
   if (error) throw error;
+}
+
+// Shared variant sync logic
+async function syncVariants(
+  supabase: ReturnType<typeof createServiceClient>,
+  payload: TemplateWebhookEvent
+) {
+  const variants = payload.variants.map(v => ({
+    id: v.id,
+    template_id: payload.storeProductTemplateId,
+    product_uid: v.productUid,
+    title: v.title,
+    variant_options: v.variantOptions,
+    created_at: new Date(payload.createdAt).toISOString(),
+    updated_at: new Date(payload.updatedAt).toISOString()
+  }));
+
+  // Batch upsert in chunks of 500 (Supabase limit)
+  const chunkSize = 500;
+  for (let i = 0; i < variants.length; i += chunkSize) {
+    const chunk = variants.slice(i, i + chunkSize);
+    
+    const { error } = await supabase
+      .from('gelato_variants')
+      .upsert(chunk, { onConflict: 'product_uid' });
+
+    if (error) throw error;
+  }
 }

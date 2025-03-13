@@ -4,15 +4,23 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import GalleryCarousel from '@/app/components/Products/GalleryCarousel';
 import ProductGrid from '@/app/components/ProductGrid';
-import { fetchProductBySlug, fetchProducts, fetchSimilarProducts } from '@/utils/wix/client';
+import AddToCartButton from '@/app/components/Products/AddToCartButton';
+import {
+  fetchProductBySlug,
+  fetchProducts,
+  fetchSimilarProducts,
+} from '@/utils/wix/productsApi';
+import { createClient } from '@/utils/supabase/server';
+import VariantSelector from '@/app/components/Products/VariantSelector';
+import { GelatoVariant } from '@/utils/gelato/types';
 
 export async function generateMetadata({
   params,
 }: {
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const slug = (await params).slug;
-  const product = await fetchProductBySlug(slug)
+  const slug = (await params).slug
+  const product = await fetchProductBySlug(slug);
 
   return {
     title: product?.name
@@ -31,8 +39,9 @@ export default async function ProductPage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const slug = (await params).slug;
-  const product = await fetchProductBySlug(slug)
+  const slug = (await params).slug
+  const product = await fetchProductBySlug(slug);
+  const supabase = createClient();
 
   if (!product) {
     return (
@@ -48,8 +57,36 @@ export default async function ProductPage({
     );
   }
 
+  // Get Gelato variants
+  const { data: variants } = await (await supabase)
+    .from('gelato_variants')
+    .select('*')
+    .eq('template_id', product.gelatoTemplateId || '');
+
+  // Extract available options with proper typing
+  const options = variants?.reduce(
+    (acc: Record<string, Set<string>>, variant: GelatoVariant) => {
+      variant.variantOptions.forEach((option) => {
+        if (!acc[option.name]) {
+          acc[option.name] = new Set();
+        }
+        acc[option.name].add(option.value);
+      });
+      return acc;
+    },
+    {}
+  );
+
+  // Format options for UI
+  const variantOptions = Object.entries(options || {}).map(
+    ([name, values]) => ({
+      name,
+      values: Array.from(values as Set<string>),
+    })
+  );
+
   const similarProducts = await fetchSimilarProducts(product._id);
-  const productImages = product.media.items.map(item => item.image.url)
+  const productImages = product.media.items.map((item) => item.image.url);
 
   return (
     <>
@@ -60,24 +97,39 @@ export default async function ProductPage({
 
         <div className="details w-full md:w-1/2 md:aspect-[4/3] px-4 flex flex-col gap-6">
           <div className="w-full flex flex-col gap-1">
-            <h2 className="capitalize hidden md:flex">{product.name}</h2>
-            <h3 className="capitalize md:hidden">{product.name}</h3>
+            <h2 className="normal-case hidden md:flex">{product.name}</h2>
+            <h3 className="normal-case md:hidden">{product.name}</h3>
             <p className="capitalize ml-2 pl-2 border-l-4 border-accent text-xl">
-            {product.price.currency} {product.price.price.toLocaleString()}
+              $ {product.price.price.toFixed(2)}
             </p>
           </div>
+
+          {variantOptions.length > 0 && (
+            <div className="space-y-4">
+              {variantOptions.map((option) => (
+                <VariantSelector
+                  key={option.name}
+                  name={option.name}
+                  values={option.values}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="w-full flex flex-col gap-1">
             <p className="text-xs opacity-50">About:</p>
             <p className="text-sm">{product.description}</p>
           </div>
-          
+
           <hr className="" />
 
-          {/* <div className="buttons w-full flex flex-col gap-4">
-            <AddToCartButton product={product} className="w-full md:w-full" />
-            <FavsButton product={product} className="w-full md:w-full" />
-          </div> */}
+          <div className="buttons w-full flex flex-col gap-4">
+            <AddToCartButton
+              product={product}
+              variants={variants || []}
+              className="w-full md:w-full"
+            />
+          </div>
         </div>
       </section>
 
@@ -96,7 +148,7 @@ export default async function ProductPage({
   );
 }
 
-export const revalidate = 3600; // 1 hour
+export const revalidate = 3600;
 
 export async function generateStaticParams() {
   const products = await fetchProducts();

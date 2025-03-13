@@ -3,7 +3,7 @@ import ProductGrid from '../ProductGrid';
 import Button from '../Button';
 import { MoveRight } from 'lucide-react';
 import Link from 'next/link';
-import { fetchProducts } from '@/utils/wix/client';
+import { fetchProducts } from '@/utils/wix/productsApi';
 
 export default async function Featured() {
   const featuredItems = await fetchProducts();

@@ -20,7 +20,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
       onMouseLeave={() => setIsHovered(false)}>
       <Link
         href={`/products/${product.slug}`}
-        target=''
+        target=""
         className="w-full aspect-[3/4] rounded-3xl overflow-hidden">
         <div className="relative w-full aspect-[3/4] rounded-3xl overflow-hidden">
           {/* Default image */}
@@ -35,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
           />
           {/* Hover image */}
           <Image
-            src={product.media.items[1].image.url}
+            src={product.media.items[1].image.url || product.media.items[0].image.url}
             alt={`${product.name} | Tappeli`}
             height={800}
             width={800}
@@ -46,7 +46,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, className }) => {
         </div>
         <div className="py-2">
           <h3 className="text-base truncate">{product.name}</h3>
-          <p className="">{product.price.currency} {product.price.price.toLocaleString()}</p>
+          <p className="">$ {product.price.price.toLocaleString()}</p>
         </div>
       </Link>
     </div>

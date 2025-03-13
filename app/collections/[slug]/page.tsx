@@ -5,8 +5,8 @@ import ProductGrid from '@/app/components/ProductGrid';
 import {
   fetchCollectionBySlug,
   fetchCollections,
-  fetchProductsByCollection,
-} from '@/utils/wix/client';
+} from '@/utils/wix/collectionsApi';
+import { fetchProductsByCollection } from '@/utils/wix/productsApi';
 import { Product } from '@/utils/wix/types';
 import { Metadata } from 'next';
 import Link from 'next/link';

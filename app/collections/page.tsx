@@ -4,7 +4,8 @@ import type { NextPage } from 'next';
 import Link from 'next/link';
 import ProductGrid from '../components/ProductGrid';
 import { MoveRight } from 'lucide-react';
-import { fetchCollections, fetchProductsByCollection } from '@/utils/wix/client';
+import { fetchCollections } from '@/utils/wix/collectionsApi';
+import { fetchProductsByCollection } from '@/utils/wix/productsApi';
 import FadedTitle from '../components/FadedTitle';
 
 const Page: NextPage = async () => {

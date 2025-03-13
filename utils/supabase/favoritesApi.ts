@@ -1,7 +1,7 @@
 // utils/supabase/favoritesApi.ts
 
+import { Product } from '../wix/types';
 import { createClient } from './client';
-import { Product } from './types';
 
 const supabase = createClient();
 
