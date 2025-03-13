@@ -1,9 +1,10 @@
-import { getCategories, getProducts } from '@/utils/supabase/api';
+import { fetchCollections } from '@/utils/wix/collectionsApi';
+import { fetchProducts } from '@/utils/wix/productsApi';
 import type { MetadataRoute } from 'next'
  
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const products = await getProducts()
-  const categories = await getCategories()
+  const products = await fetchProducts()
+  const categories = await fetchCollections();
 
   const productPages = products.map(product => ({
     url: `https://tappeli.vercel.app/products/${product.slug}`,
