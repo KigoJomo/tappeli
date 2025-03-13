@@ -17,7 +17,10 @@ const CheckoutPage = () => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Calculate totals
-  const subtotal = cart.reduce((sum, item) => sum + item.product.base_price * item.quantity, 0);
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.product.price.price * item.quantity,
+    0
+  );
   const shipping = 500; // Flat rate shipping
   const total = subtotal + shipping;
 
@@ -28,7 +31,6 @@ const CheckoutPage = () => {
       setFormErrors({});
     } catch (error) {
       console.error(error);
-      
     }
   };
 
@@ -49,7 +51,9 @@ const CheckoutPage = () => {
               label="Email"
               type="email"
               value={email}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setEmail(e.target.value)
+              }
               required
               error={formErrors.email}
             />
@@ -62,28 +66,12 @@ const CheckoutPage = () => {
               Shipping Address
             </h3>
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="First Name"
-                required
-                error={formErrors.firstName}
-              />
-              <Input
-                label="Last Name"
-                required
-                error={formErrors.lastName}
-              />
+              <Input label="First Name" required error={formErrors.firstName} />
+              <Input label="Last Name" required error={formErrors.lastName} />
             </div>
-            <Input
-              label="Address"
-              required
-              error={formErrors.address}
-            />
+            <Input label="Address" required error={formErrors.address} />
             <div className="grid grid-cols-2 gap-4">
-              <Input
-                label="City"
-                required
-                error={formErrors.city}
-              />
+              <Input label="City" required error={formErrors.city} />
               <Input
                 label="Postal Code"
                 required
@@ -123,11 +111,7 @@ const CheckoutPage = () => {
           </div>
 
           <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="saveAddress"
-              className="accent-accent"
-            />
+            <input type="checkbox" id="saveAddress" className="accent-accent" />
             <label htmlFor="saveAddress" className="text-sm">
               Save shipping address for future use
             </label>
@@ -144,29 +128,35 @@ const CheckoutPage = () => {
         {/* Order Summary */}
         <div className="bg-foreground/5 p-6 rounded-xl">
           <h2 className="text-2xl font-bold mb-6">Order Summary</h2>
-          
+
           <div className="space-y-4">
-            {cart.map(item => (
-              <div key={item.product.id} className="flex justify-between items-center">
+            {cart.map((item) => (
+              <div
+                key={item.product._id}
+                className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 bg-foreground/10 rounded-lg overflow-hidden">
                     <Image
-                      src={item.product.image_urls[0]}
-                      alt={item.product.title}
+                      src={item.product.media.items[0].image.url}
+                      alt={`${item.product.name} | Tappeli`}
                       width={1000}
                       height={1000}
                       className="object-cover w-full h-full"
                     />
                   </div>
                   <div>
-                    <p className="font-medium capitalize">{item.product.title}</p>
+                    <p className="font-medium capitalize">
+                      {item.product.name}
+                    </p>
                     <p className="text-sm text-foreground-light">
-                      {item.quantity} × Ksh {item.product.base_price.toLocaleString()}
+                      {item.quantity} × ${' '}
+                      {item.product.price.price.toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <p className="font-medium">
-                  Ksh {(item.product.base_price * item.quantity).toLocaleString()}
+                  ${' '}
+                  {(item.product.price.price * item.quantity).toLocaleString()}
                 </p>
               </div>
             ))}
@@ -175,19 +165,21 @@ const CheckoutPage = () => {
           <div className="border-t border-foreground-faded mt-6 pt-6 space-y-4">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>Ksh {subtotal.toLocaleString()}</span>
+              <span>$ {subtotal.toLocaleString()}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping</span>
-              <span>Ksh {shipping.toLocaleString()}</span>
+              <span>$ {shipping.toLocaleString()}</span>
             </div>
             <div className="flex justify-between font-bold text-lg">
               <span>Total</span>
-              <span>Ksh {total.toLocaleString()}</span>
+              <span>$ {total.toLocaleString()}</span>
             </div>
           </div>
 
-          <Link href="/products" className="mt-6 inline-block text-accent hover:underline text-sm">
+          <Link
+            href="/products"
+            className="mt-6 inline-block text-accent hover:underline text-sm">
             ← Return to shop
           </Link>
 
